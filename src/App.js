@@ -1,10 +1,17 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useRef } from "react";
 import "./style.css";
 import { reducer } from "./reducer";
 import { theme, ThemeContext } from "./context";
+import PropTypes from "prop-types";
 
 import Text from "./text";
-export default function App() {
+function App(props) {
+  // ref is like a pointer + state holder
+  // ref does not re-render the component, it is reponsible to store the reference element value
+  // it is more like a querySelector
+  const ref = useRef(null);
+  const domRef = useRef(null);
+
   const [state, setState] = useState(0);
 
   const [user, setUser] = useState({ name: "", age: 0 });
@@ -22,11 +29,16 @@ export default function App() {
   return (
     <ThemeContext.Provider value={theme.dark}>
       <div>
-        <h1>Hello StackBlitz!</h1>
+        <input ref={ref} placeholder="testing ref" />
+        <h1 ref={domRef}>Hello StackBlitz! {props.id}</h1>
         <p>Start editing to see some magic happen :)</p>
         <button
           onClick={() => {
             setState(1);
+            ref.current.value = "Rashid Iqbal";
+            ref.current.focus();
+            console.log(ref.current.value);
+            console.log(domRef.current.innerText);
           }}
         >
           change
@@ -66,3 +78,13 @@ export default function App() {
     </ThemeContext.Provider>
   );
 }
+
+App.propTypes = {
+  id: PropTypes.string.isRequired
+};
+
+App.defaultProps = {
+  id: "123"
+};
+
+export default App;
